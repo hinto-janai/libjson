@@ -1,0 +1,3 @@
+[submodule "external/JSON.sh"]
+	path = external/JSON.sh
+	url = https://github.com/dominictarr/JSON.sh
