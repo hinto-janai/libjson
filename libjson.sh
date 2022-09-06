@@ -259,9 +259,18 @@ json::sh() {
 #
 # This is now in a form where
 # Bash can easily source it.
-json::var() { json::sh -l | sed "s/\[\"//g; s/\"\]\t\"/=/g; s/\"$//g; s/\"\]\t/=/g; s/\",\"/_/g; s/={/='{/g; s/}$/}'/g"; }
+json::var() { json::sh -l | sed "s/\[\"//g; s/\"\]\t\"/=/g; s/\"$//g; s/\"\]\t/=/g; s/\",\"/_/g; s/\",/_/g; s/\,"/_/g; s/\",/_/g; s/,\"/_/g; s/={/='{/g; s/}$/}'/g"; }
 
-# This skips printing to STDOUT and
-# directly sources the variables created
-# from above. This create GLOBAL variables.
-json::src() { source <(json::var); }
+# This turns json::var()
+# output into a single line
+# which allows you to do this:
+#
+# local $(json::line < file.json)
+#
+# Now all the JSON values will be
+# declared as local variables all
+# at once, no looping.
+json::line() { local -a LIBJSON_LINE=($(json::var)); echo ${LIBJSON_LINE[@]}; }
+
+# This creates GLOBAL variables.
+json::source() { source <(json::var); }
